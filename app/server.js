@@ -1,6 +1,10 @@
-import database from './utils/database.js';
 import makeApp from './app.js';
+import database from './database/database.js';
+import './models/associations.js'
 
-const app = makeApp(database);
-
-app.listen(5001, () => console.log("listening on port 5001"));
+const app = makeApp();
+console.log(database.models);
+database.sync({force: true, logging: console.log})
+    .then(() => {
+        app.listen(5001, () => console.log('listen on port 5001'));
+    })

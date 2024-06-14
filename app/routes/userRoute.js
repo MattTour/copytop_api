@@ -1,78 +1,60 @@
 import { Router } from "express";
-const userRouter = Router();
-import * as userService from "../services/userService.js"
+import * as userService from '../services/userService.js';
 
-/**
- * @swagger
- *
- *  components:
- *      schema:
- *          user:
- *              type: object
- *              properties:
- *                  last_name:
- *                      type: string
- *                  first_name:
- *                      type: string
- *                  email:
- *                      type: string
- *                  telephone:
- *                      type: string
- *                  role_id:
- *                      type: integer
- *          user_fav_sport:
- *              type: object
- *              properties:
- *                  id_sport:
- *                      type: integer
- *          user_fav_equipe:
- *              type: object
- *              properties:
- *                  id_equipe:
- *                      type: integer
- *          user_event:
- *              type: object
- *              properties:
- *                  id_event:
- *                      type: integer
- */
+const userRouter = Router();
 
 userRouter.get('/', async (req, res) => {
-    let allUsers = await userService.getUsers();
-    res.json(allUsers).status(200);
+    const allUsers = await userService.getUsers();
+    res.status(200).json(allUsers);
 });
 
-/**
- * @swagger
- * /user/find-one/{userId}:
- *  get:
- *      tags:
- *          - User
- *      description: Retourne les informations d'un utilisateur à partir de son Id
- *      parameters:
- *          - name: userId
- *            in: path
- *            description: id de l'utilisateur
- *          - name: token
- *            in: header
- *            description: token d'accès
- *      responses:
- *          200:
- *              description: Retourne les informations d'un utilisateur unique
- *          404:
- *              description: L'id utilisateur saisie n'est pas connu ne base de données
- */
 userRouter.get('/find-one/:userId', async (req, res) => {
-    if (!req.params) {
-        res.json('Error: user id missing in parameters');
+    const oneUser = await userService.getUser(req.params.userId);
+    if (!oneUser) {
+        res.status(404).send('Error: no user found with this id');
     } else {
-        let user = await userService.getUser(req.params.userId);
-        if (!user) {
-            res.json('Error: this user id is unknow in database').status(404);
+        res.status(200).json(oneUser);
+    }
+});
+
+userRouter.post('/create', async (req, res) => {
+    if (!req.body.first_name || !req.body.last_name
+        || !req.body.email || !req.body.password
+    ) {
+        res.status(404).send('Error: Missing first_name, last_name, email or password');
+    } else {
+        const newUser = await userService.createUser(req.body.first_name, req.body.last_name, req.body.email, req.body.password);
+        if (!newUser) {
+            res.json('Error: An error occured during the save').status(500);
         } else {
-            res.json(user).status(200);
+            res.json(newUser).status(201);
         }
     }
+});
+
+userRouter.put('/update/:userId', async (req, res) => {
+    if (!req.body.first_name || !req.body.last_name
+        || !req.body.email || !req.body.password
+    ) {
+        res.status(404).send('Error: Missing first_name, last_name, email or password');
+    } else {
+        let checkUser = await userService.getUser(req.params.userId);
+        if (!checkUser) {
+            res.send('Error: This user id is unknow in database').status(404);
+            return
+        }
+        const updatedUser = await userService.updateUser(checkUser, req.body.last_name, req.body.first_name, req.body.email, req.body.password);
+        res.json(updatedUser).status(200);
+    }
+});
+
+userRouter.delete('/delete/:userId', async (req, res) => {
+    const deletedUser = await userService.deleteUser(req.params.userId);
+    if (!deletedUser) {
+        res.send('Error: User not deleted').status(404);
+        return;
+    }
+    res.send('Success: User deleted').status(200);
 });
 
 export default userRouter;
