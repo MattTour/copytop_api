@@ -1,22 +1,24 @@
 import { DataTypes, Model } from "sequelize";
-import sequelize from "../utils/database.js";
+import { Sequelize } from 'sequelize';
 
-class post extends Model { };
+export class Post extends Model { };
 
-post.init({
-    title: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    content: {
-        type: DataTypes.STRING,
-        allowNull: false
-    }
-}, {
-    sequelize,
-    createdAt: true,
-    updatedAt: true,
-    tableName: 'POST',
-})
+export const configure = (sequelize) => {
+    Post.init({
+        title: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        content: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
+    }, {
+        sequelize,
+        tableName: 'POSTS',
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
+    })
+}
 
-export default post;
+export default Post;

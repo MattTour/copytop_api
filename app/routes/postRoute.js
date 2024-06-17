@@ -39,7 +39,7 @@ postRouter.put('/update/:postId', async (req, res) => {
             res.json('Error: This postId is unknow in database').status(404);
             return;
         }
-        const updatedPost = await postService.updatePost(req.params.postId, req.body.title, req.body.content);
+        const updatedPost = await postService.updatePost(checkPost, req.body.title, req.body.content);
         res.json(updatedPost).status(200);
     }
 });

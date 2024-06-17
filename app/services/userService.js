@@ -1,58 +1,42 @@
-import { QueryTypes } from 'sequelize';
-import sequelize from "../utils/database.js";
-import user from "../models/userModel.js";
-import { genSaltSync, hash, compare } from 'bcrypt';
+import User from "../models/userModel.js";
 
 export async function getUsers() {
-    let users = await user.findAll();
-    return users;
+    return await User.findAll();
 }
 
 export async function getUser(userId) {
-    let oneUser = await user.findByPk(userId);
-    return oneUser;
+    return await User.findByPk(userId);
 }
 
-export async function findUserByMail(email) {
-    let oneUser = await user.findOne({ where: { email: email } });
-    return oneUser;
+export async function getUserByMail(userMail) {
+    return await User.findOne({ where: { email: userMail } });
 }
 
-export async function createUser(userObject) {
-    const salt = genSaltSync(10);
-    const hashedPass = await hash(userObject.password, salt);
-
-    const newUser = user.build({
-        last_name: userObject.last_name,
-        first_name: userObject.first_name,
-        email: userObject.email,
-        telephone: userObject.telephone,
-        password: hashedPass,
-        role_id: 1
+export async function createUser(lastName, firstName, email, password) {
+    const newUser = User.build({
+        last_name: lastName,
+        first_name: firstName,
+        email: email,
+        password: password
     });
     await newUser.save();
     return newUser;
 }
 
-export async function upadteUser(userId, first_name, last_name, email, telephone, role_id) {
-    let userObject = await getUser(userId);
-    userObject.first_name = first_name;
-    userObject.last_name = last_name;
-    userObject.email = email;
-    userObject.telephone = telephone;
-    userObject.role_id = role_id;
-
+export async function updateUser(userObject, lastName, firstName, email, password) {
+    userObject.last_name = lastName,
+    userObject.first_name = firstName,
+    userObject.email = email,
+    userObject.password = password
     await userObject.save();
     return userObject;
 }
 
-export async function deleteUser(userId) {
+export async function deleteUser (userId) {
     let userObject = await getUser(userId);
+    if(!userObject) {
+        return false;
+    }
     await userObject.destroy();
-    return 'User deleted';
-}
-
-export async function checkPassword(bodyPassword, userPassword) {
-    let check = await compare(bodyPassword, userPassword);
-    return check;
+    return true;
 }
