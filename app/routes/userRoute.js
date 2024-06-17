@@ -49,12 +49,13 @@ userRouter.put('/update/:userId', async (req, res) => {
 });
 
 userRouter.delete('/delete/:userId', async (req, res) => {
-    const deletedUser = await userService.deleteUser(req.params.userId);
-    if (!deletedUser) {
-        res.send('Error: User not deleted').status(404);
+    const checkUser = await userService.getUser(req.params.userId);
+    if(!checkUser) {
+        res.status(404).send('Error: user id not found in database');
         return;
     }
-    res.send('Success: User deleted').status(200);
+    await userService.deleteUser(checkUser);
+    res.json('Success: User deleted').status(200);
 });
 
 export default userRouter;

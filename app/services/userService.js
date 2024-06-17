@@ -32,11 +32,6 @@ export async function updateUser(userObject, lastName, firstName, email, passwor
     return userObject;
 }
 
-export async function deleteUser (userId) {
-    let userObject = await getUser(userId);
-    if(!userObject) {
-        return false;
-    }
+export async function deleteUser (userObject) {
     await userObject.destroy();
-    return true;
 }
