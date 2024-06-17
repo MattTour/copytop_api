@@ -24,11 +24,6 @@ export async function updatePost(postObject, title, content) {
     return postObject;
 } 
 
-export async function deletePost(postId) {
-    let postObject = await getPost(postId);
-    if(!postObject) {
-        return false
-    }
+export async function deletePost(postObject) {
     await postObject.destroy();
-    return true;
 }
