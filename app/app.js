@@ -6,6 +6,7 @@ import swaggerUi from 'swagger-ui-express'
 
 //Add router here
 import userRouter from './routes/userRoute.js';
+import postRouter from './routes/postRoute.js';
 
 
 export default function (database) {
@@ -16,6 +17,7 @@ export default function (database) {
 
   //add routes here
   app.use('/api/user', userRouter);
+  app.use('/api/post', postRouter);
 
   // Swagger documentation
 
