@@ -45,12 +45,13 @@ postRouter.put('/update/:postId', async (req, res) => {
 });
 
 postRouter.delete('/delete/:postId', async (req, res) => {
-    const deletedPost = await postService.deletePost(req.params.postId);
-    if (!deletedPost) {
-        res.send('Error: Post not deleted').status(404);
+    const checkPost = await postService.getPost(req.params.postId);
+    if(!checkPost) {
+        res.status(404).send('Error: this post id is not found in database');
         return;
     }
-    res.send('Success: Post deleted').status(200);
-})
+    await postService.deletePost(checkPost);
+    res.json('Success: Post deleted').status(200);
+});
 
 export default postRouter;
