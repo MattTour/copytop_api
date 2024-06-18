@@ -1,13 +1,82 @@
 import { Router } from "express";
 import * as postService from '../services/postService.js';
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Post:
+ *       type: object
+ *       required: 
+ *         - title
+ *         - content
+ *       properties:
+ *         id:
+ *           type: number
+ *           description: The auto-generated id of the post
+ *         title:
+ *           type: string
+ *           description: The title of the Post
+ *         content: 
+ *           type: string
+ *           description: The content of the Post
+ *       example:
+ *         id: 123
+ *         title: My first post
+ *         content: The text in the content on my first post
+ */
+
 const postRouter = Router();
 
+/**
+ * @swagger
+ * tags:
+ *   name: Post
+ *   description: The Post managing API
+ * /api/post/:
+ *   get:
+ *     summary: Get all the Posts
+ *     tags: [Post]
+ *     responses:
+ *       200:
+ *         description: All Posts informations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *       500:
+ *         description: Some server error
+ */
 postRouter.get('/', async (req, res) => {
     const allPosts = await postService.getPosts();
     res.status(200).json(allPosts);
 });
 
+/**
+ * @swagger
+ * tags:
+ *   name: Post
+ * /api/post/find-one/{postId}:
+ *   get:
+ *     summary: Get the Post by id
+ *     tags: [Post]
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The book id
+ *     responses:
+ *       200:
+ *         description: The Post information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *       500:
+ *         description: Some server error
+ */
 postRouter.get('/find-one/:postId', async (req, res) => {
     const onePost = await postService.getPost(req.params.postId);
     if (!onePost) {
@@ -17,7 +86,31 @@ postRouter.get('/find-one/:postId', async (req, res) => {
     }
 });
 
-postRouter.post('/create', async (req, res) => {
+/**
+ * @swagger
+ * tags:
+ *   name: Post
+ * /api/post/create/:
+ *   post:
+ *     summary: Create a new Post
+ *     tags: [Post]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Post'
+ *     responses:
+ *       201:
+ *         description: The created Post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *       500:
+ *         description: Some server error
+ */
+postRouter.post('/create/', async (req, res) => {
     if (!req.body.title || !req.body.content) {
         res.json('Error: missing title and content').status(404);
     } else {
@@ -30,6 +123,37 @@ postRouter.post('/create', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * tags:
+ *   name: Post
+ * /api/post/update/{postId}:
+ *   put:
+ *     summary: Update a Post by the id
+ *     tags: [Post]
+ *     parameters:
+ *      - in: path
+ *        name: postId
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The Post id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Post'
+ *     responses:
+ *       200:
+ *         description: The updated Post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *       500:
+ *         description: Some server error
+ */
 postRouter.put('/update/:postId', async (req, res) => {
     if (!req.params.postId || !req.body.title || !req.body.content) {
         res.json('Error: postId, title and content are required').status(404);
@@ -44,6 +168,32 @@ postRouter.put('/update/:postId', async (req, res) => {
     }
 });
 
+
+/**
+ * @swagger
+ * tags:
+ *   name: Post
+ * /api/post/delete/{postId}:
+ *   delete:
+ *     summary: Remove the Post by id
+ *     tags: [Post]
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The Post id
+ *     responses:
+ *       200:
+ *         description: The Post was deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *       500:
+ *         description: Some server error
+ */
 postRouter.delete('/delete/:postId', async (req, res) => {
     const checkPost = await postService.getPost(req.params.postId);
     if(!checkPost) {
