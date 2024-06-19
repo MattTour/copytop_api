@@ -19,11 +19,11 @@ pushRouter.get('/key', async (req, res) => {
 });
 
 pushRouter.post('/subscribe', async (req, res) => {
-    if (!req.body.endpoint || !req.body.p256dh || !req.body.auth) {
+    if (!req.body.endpoint || !req.body.keys.p256dh || !req.body.keys.auth) {
         res.send('Error: endpoint, p256dh, auth are required keys').status(404);
         return;
     }
-    const addSubscribe = await pushService.subscribe(req.body.endpoint, req.body.p256dh, req.body.auth);
+    const addSubscribe = await pushService.subscribe(req.body.endpoint, req.body.keys.p256dh, req.body.keys.auth);
     res.json(addSubscribe).status(200);
 });
 

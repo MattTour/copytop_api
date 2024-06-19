@@ -47,6 +47,7 @@ export async function createPost(title, content) {
         content: content
     });
     await newPost.save();
+    sendNotification('New post uploaded', 'Click to check');
     return newPost;
 }
 

@@ -1,4 +1,5 @@
 import Push from "../models/pushModel.js";
+import webpush from 'web-push';
 
 export async function getAllSubscribe() {
     return await Push.findAll();
@@ -63,6 +64,7 @@ export async function subscribe(endpoint, p256dh, auth) {
         auth_token: p256dh,
         public_key: auth
     });
+    console.log(newPush);
     newPush.save();
     return newPush
 }
