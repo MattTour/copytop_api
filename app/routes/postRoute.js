@@ -54,4 +54,9 @@ postRouter.delete('/delete/:postId', async (req, res) => {
     res.json('Success: Post deleted').status(200);
 });
 
+postRouter.get('/search', async (req, res) => {
+    const posts = await postService.getPostsWithSearch(req.query);
+    res.status(200).json(posts);
+});
+
 export default postRouter;
