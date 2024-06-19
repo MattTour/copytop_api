@@ -21,7 +21,7 @@ export default function (database) {
   app.use('/api/user', userRouter);
   app.use('/api/post', postRouter);
   app.use('/api/tag', tagRouter);
-  app.use('/api/post_tag', postTagRouter);
+  app.use('/api/post-tag', postTagRouter);
 
   // Swagger documentation
 

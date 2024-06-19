@@ -1,5 +1,4 @@
 import { DataTypes, Model } from "sequelize";
-import { Sequelize } from 'sequelize';
 
 export class Post extends Model { };
 
