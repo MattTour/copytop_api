@@ -1,6 +1,8 @@
 import Post from "./postModel.js";
 import Tag from "./tagModel.js";
 import PostTag from "./postTagModel.js";
+import Push from "./pushModel.js";
+import User from "./userModel.js";
 
 export const configure = () => {
     Post.hasMany(PostTag, {
@@ -18,4 +20,12 @@ export const configure = () => {
         onDelete: 'RESTRICT',
         onUpdate: 'RESTRICT'
     });
+
+    User.hasOne(Push, {
+        foreignKey: {
+            name: 'user_id'
+        },
+        onDelete: 'RESTRICT',
+        onUpdate: 'RESTRICT'
+    })
 }
