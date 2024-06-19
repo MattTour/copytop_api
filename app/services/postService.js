@@ -1,6 +1,7 @@
 import Post from '../models/postModel.js';
 import sequelize from "../database/database.js";
 import { QueryTypes } from 'sequelize';
+import { sendNotification } from './pushService.js';
 
 export async function getPosts() {
     return await Post.findAll();
