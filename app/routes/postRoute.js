@@ -66,7 +66,7 @@ postRouter.get('/', async (req, res) => {
  *         schema:
  *           type: string
  *         required: true
- *         description: The book id
+ *         description: The post id
  *     responses:
  *       200:
  *         description: The Post information
