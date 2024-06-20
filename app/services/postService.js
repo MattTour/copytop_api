@@ -1,6 +1,7 @@
 import Post from '../models/postModel.js';
 import sequelize from "../database/database.js";
 import { QueryTypes } from 'sequelize';
+import { sendNotification } from './pushService.js';
 
 export async function getPosts() {
     return await Post.findAll();
@@ -47,6 +48,7 @@ export async function createPost(title, content) {
         content: content
     });
     await newPost.save();
+    sendNotification('New post uploaded', 'Click to check');
     return newPost;
 }
 

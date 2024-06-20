@@ -28,6 +28,7 @@
     "mysql2": "^3.6.0",
     "sequelize": "^6.32.1",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.0"
+    "swagger-ui-express": "^5.0.0",
+    "web-push": "^3.6.7"
   }
 }

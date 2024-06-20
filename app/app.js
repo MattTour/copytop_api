@@ -9,6 +9,7 @@ import userRouter from './routes/userRoute.js';
 import postRouter from './routes/postRoute.js';
 import tagRouter from './routes/tagRoute.js';
 import postTagRouter from './routes/postTagRoute.js';
+import pushRouter from './routes/pushRoute.js';
 
 
 export default function (database) {
@@ -22,6 +23,7 @@ export default function (database) {
   app.use('/api/post', postRouter);
   app.use('/api/tag', tagRouter);
   app.use('/api/post-tag', postTagRouter);
+  app.use('/api/push', pushRouter);
 
   // Swagger documentation
 
