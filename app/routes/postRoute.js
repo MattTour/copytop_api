@@ -7,7 +7,7 @@ import * as postService from '../services/postService.js';
  *   schemas:
  *     Post:
  *       type: object
- *       required: 
+ *       required:
  *         - title
  *         - content
  *       properties:
@@ -17,7 +17,7 @@ import * as postService from '../services/postService.js';
  *         title:
  *           type: string
  *           description: The title of the Post
- *         content: 
+ *         content:
  *           type: string
  *           description: The content of the Post
  *       example:
@@ -114,7 +114,7 @@ postRouter.post('/create/', async (req, res) => {
     if (!req.body.title || !req.body.content) {
         res.json('Error: missing title and content').status(404);
     } else {
-        const newPost = await postService.createPost(req.body.title, req.body.content);
+        const newPost = await postService.createPost(req.body.title, req.body.content, req.body.tags);
         if (!newPost) {
             res.json('Error: An error occured during the save').status(500);
         } else {

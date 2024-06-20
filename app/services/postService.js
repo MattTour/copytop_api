@@ -14,13 +14,11 @@ export async function getPost(postId) {
 export async function getPostsWithSearch(queryParams) {
     let requestParams = "";
 
-    for (param in queryParams) {
-        if (req.query.hasOwnProperty(param)) {
-            if (param == "search") {
-                requestParams += `AND (p.content LIKE '${req.query[param]}' OR p.title LIKE '${req.query[param]}') `;
-            } else {
-                requestParams += `AND pt.id = ${param} `;
-            }
+    for (let param in queryParams) {
+        if (param == "search") {
+            requestParams += `AND (p.content LIKE '%${queryParams[param]}%' OR p.title LIKE '%${queryParams[param]}%') `;
+        } else {
+            requestParams += `AND t.id = ${param} `;
         }
     }
 
@@ -32,8 +30,10 @@ export async function getPostsWithSearch(queryParams) {
         p.created_at as postDate
         FROM POSTS p
         LEFT JOIN POSTS_TAGS pt on pt.post_id = p.id
+        LEFT JOIN TAGS t on t.id = pt.tag_id
         WHERE 0 = 0
         ${requestParams}
+        GROUP BY p.id
         ORDER BY p.created_at DESC`,
         {
             type: QueryTypes.SELECT
@@ -42,12 +42,34 @@ export async function getPostsWithSearch(queryParams) {
     return posts;
 }
 
-export async function createPost(title, content) {
+export async function createPost(title, content, tags) {
     const newPost = Post.build({
         title: title,
         content: content
     });
     await newPost.save();
+
+    let tagsInsert = '';
+
+    tags = tags.split(',');
+
+    if (tags && tags.length > 0) {
+        tags.forEach(tag => {
+            tagsInsert += ` (${newPost.id}, ${tag}),`;
+        });
+
+        tagsInsert = tagsInsert.slice(0, -1);
+
+        await sequelize.query(
+            `INSERT INTO POSTS_TAGS (post_id, tag_id)
+            VALUES
+            ${tagsInsert};`,
+            {
+                type: QueryTypes.INSERT
+            }
+        );
+    }
+
     sendNotification('New post uploaded', 'Click to check');
     return newPost;
 }
